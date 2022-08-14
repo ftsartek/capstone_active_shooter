@@ -217,7 +217,7 @@ GameObject:
   - component: {fileID: 324581747}
   - component: {fileID: 324581746}
   m_Layer: 0
-  m_Name: Capsule
+  m_Name: ShooterBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -408,7 +408,7 @@ GameObject:
   - component: {fileID: 1154920109}
   - component: {fileID: 1154920110}
   m_Layer: 0
-  m_Name: EnemyCapsule
+  m_Name: Shooter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -444,7 +444,7 @@ NavMeshAgent:
   m_Acceleration: 40
   avoidancePriority: 50
   m_AngularSpeed: 300
-  m_StoppingDistance: 30
+  m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -466,6 +466,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   agent: {fileID: 1154920109}
   player: {fileID: 8616685848339890939}
+  playerBody: {fileID: 5393215580328679149}
+  rayOffset: {x: 0, y: 60, z: 0}
+  maxShootingDistance: Infinity
 --- !u!1001 &1616630321
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -782,7 +785,7 @@ GameObject:
   - component: {fileID: 5393215580328679136}
   - component: {fileID: 5393215580328679151}
   m_Layer: 0
-  m_Name: Capsule
+  m_Name: PlayerBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -967,7 +970,7 @@ GameObject:
   - component: {fileID: 5420857362824666759}
   - component: {fileID: 8616685848339890935}
   m_Layer: 0
-  m_Name: PlayerCapsule
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
