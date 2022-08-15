@@ -3,7 +3,7 @@
 ### Overview
 This is the 2022 Massey Capstone project for:
  - Bradley Grapes
- - Melissa Ouemo
+ - Melissa Maillot
  - Isaac Achten
  - Jordan Russell
 
