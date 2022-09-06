@@ -7,39 +7,48 @@ using Quaternion = UnityEngine.Quaternion;
 using Vector3 = UnityEngine.Vector3;
 using Random = System.Random;
 using UnityEngine.UIElements;
+using System;
 
-public class ShooterAI : MonoBehaviour
-{    public float wanderTime = 6;
-    private float timer;
+enum State {
+    Wandering,
+    Shooting,
+    Chasing,
+    NewWanderGoal
+}
 
-    [SerializeField]
-    private NavMeshAgent agent;
+public class ShooterAI : MonoBehaviour {
+    [SerializeField] private NavMeshAgent agent;
+    [SerializeField] private GameObject player;
+    [SerializeField] private GameObject playerBody;
+    [SerializeField] private Vector3 rayOffset = new Vector3(0, 30, 0);
+    [SerializeField] private GameObject marker;
 
-    [SerializeField]
-    private GameObject player;
+    //Timers
+    private static float wanderTime = 1000;
+    private static float chaseTime = 50;
 
-    [SerializeField]
-    private GameObject playerBody;
+    //Goals
+    private static int goalCount = 20;
+    private static int goalOffset = 90;
 
-    [SerializeField]
-    private Vector3 rayOffset = new Vector3(0, 30, 0);
-
-    public float maxShootingDistance = Mathf.Infinity;
-
-    [SerializeField]
-    private GameObject marker;
-
-    public int goalCount = 20;
-    public int goalRadius = 4000;
+    //Distances
+    private static int chaseRadius = 2000;
+    private static int goalRadius = 4000;
+    private static float shotRadius = Mathf.Infinity;
 
     private Vector3[] goals;
+    private float timer;
+    private State state = State.Wandering;
+    private GameObject chaseTarget;
 
     void OnEnable() {
         timer = wanderTime;
 
+        //TODO: Replace markers with less hacky way of showing goals
         goals = new Vector3[goalCount];
 
         for (int i = 0; i < goals.Length; i++) {
+            //choose a random place on the navmesh
             Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * goalRadius;
             randomDirection += transform.position;
             NavMeshHit navHit;
@@ -52,35 +61,77 @@ public class ShooterAI : MonoBehaviour
             Instantiate(marker, goals[i], Quaternion.identity);
         }
     }
-    
+
     void FixedUpdate() {
         timer += Time.deltaTime;
 
         Vector3 startPoint = transform.position + rayOffset;
 
-        //TODO: Stop when player approaches
-        //TODO: Choose another position if it stays too long in one place (possibly even strike bad goal off list?)
-        /*Vector3 playerDirection = (player.transform.position + rayOffset) - startPoint;
-        RaycastHit hitPlayer;
-        bool hasHit = Physics.Raycast(startPoint, playerDirection, out hitPlayer, maxShootingDistance) ;
+        Vector3 playerDirection = (player.transform.position + rayOffset) - startPoint;
+        RaycastHit playerHit;
+        bool hasHit = Physics.Raycast(startPoint, playerDirection, out playerHit, shotRadius);
 
-        if (hasHit && hitPlayer.collider.gameObject.name == playerBody.name) {
-            agent.isStopped = true;
-            Debug.DrawRay(startPoint, playerDirection * hitPlayer.distance, Color.green);
+        if (state != State.Shooting && hasHit && playerHit.collider.gameObject.name == playerBody.name) {
+            state = State.Shooting;
         }
-        else*/ if (timer >= wanderTime || pathComplete() || agent.isStopped) {
-            agent.isStopped = false;
-            timer = 0;
 
-            Random random = new Random();
-            agent.SetDestination(goals[random.Next(0, goals.Length)]);
-            
+        switch (state) {
+            case State.Shooting:
+                Debug.DrawRay(startPoint, playerDirection * playerHit.distance, Color.green);
+
+                agent.isStopped = true;
+                chaseTarget = player;
+
+                if(!hasHit || playerHit.collider.gameObject.name != playerBody.name) {
+                    Debug.Log("chase begun");
+
+                    timer = 0;
+                    state = State.Chasing;
+                }
+
+                break;
+
+            case State.Chasing:
+                Debug.DrawRay(startPoint, playerDirection * playerHit.distance, Color.yellow);
+
+                agent.isStopped = false;
+                agent.SetDestination(chaseTarget.transform.position);
+
+                if (Vector3.Distance(agent.destination, agent.transform.position) > chaseRadius
+                        || timer >= chaseTime) {
+                    state = State.NewWanderGoal;
+                }
+
+                break;
+
+            case State.NewWanderGoal:
+                //this is its own state as it can be troggered by two actions
+                Debug.DrawRay(startPoint, playerDirection * playerHit.distance, Color.red);
+                Debug.Log("new random target chosen");
+
+                agent.isStopped = false;
+                chaseTarget = null;
+
+                state = State.Wandering;
+                timer = 0;
+
+                Random random = new Random();
+                agent.SetDestination(goals[random.Next(0, goals.Length)]);
+                break;
+
+            case State.Wandering:
+                agent.isStopped = false;
+
+                if (timer >= wanderTime || pathComplete()) {
+                    state = State.NewWanderGoal;
+                }
+                break;
         }
 
     }
 
-    protected bool pathComplete() {
-        if (Vector3.Distance(agent.destination, agent.transform.position) <= agent.stoppingDistance) {
+    private bool pathComplete() {
+        if (Vector3.Distance(agent.destination, agent.transform.position) <= goalOffset) {
             return !agent.hasPath || agent.velocity.sqrMagnitude == 0f;
         }
 

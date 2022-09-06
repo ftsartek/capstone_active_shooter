@@ -426,13 +426,13 @@ NavMeshAgent:
   m_GameObject: {fileID: 1154920106}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.7
+  m_Radius: 1
   m_Speed: 400
   m_Acceleration: 40
   avoidancePriority: 99
   m_AngularSpeed: 300
   m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
+  m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
@@ -451,15 +451,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 224adbfa501d949df858ed980abf8e6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wanderTime: 500
   agent: {fileID: 1154920109}
   player: {fileID: 8616685848339890939}
   playerBody: {fileID: 5393215580328679149}
   rayOffset: {x: 0, y: 60, z: 0}
-  maxShootingDistance: Infinity
   marker: {fileID: 7110437356311563727, guid: f2d2d3f708a5e4b3a8136efd49ff69f7, type: 3}
-  goalCount: 20
-  goalRadius: 4000
 --- !u!54 &1154920111
 Rigidbody:
   m_ObjectHideFlags: 0
