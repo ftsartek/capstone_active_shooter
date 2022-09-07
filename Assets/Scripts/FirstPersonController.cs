@@ -3,14 +3,12 @@
 using UnityEngine.InputSystem;
 #endif
 
-namespace StarterAssets
-{
+namespace StarterAssets {
 	[RequireComponent(typeof(CharacterController))]
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 	[RequireComponent(typeof(PlayerInput))]
 #endif
-	public class FirstPersonController : MonoBehaviour
-	{
+	public class FirstPersonController : MonoBehaviour {
 		[Header("Player")]
 		[Tooltip("Move speed of the character in m/s")]
 		public float MoveSpeed = 300.0f;
@@ -70,10 +68,8 @@ namespace StarterAssets
 
 		private const float _threshold = 0.01f;
 
-		private bool IsCurrentDeviceMouse
-		{
-			get
-			{
+		private bool IsCurrentDeviceMouse {
+			get {
 				#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 				return _playerInput.currentControlScheme == "KeyboardMouse";
 				#else
@@ -82,11 +78,9 @@ namespace StarterAssets
 			}
 		}
 
-		private void Awake()
-		{
+		private void Awake() {
 			// get a reference to our main camera
-			if (_mainCamera == null)
-			{
+			if (_mainCamera == null) {
 				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 			}
 		}
@@ -106,28 +100,23 @@ namespace StarterAssets
 			_fallTimeoutDelta = FallTimeout;
 		}
 
-		private void Update()
-		{
+		private void Update() {
 			JumpAndGravity();
 			GroundedCheck();
 			Move();
 		}
 
-		private void LateUpdate()
-		{
+		private void LateUpdate() {
 			CameraRotation();
 		}
 
-		private void GroundedCheck()
-		{
+		private void GroundedCheck() {
 			Grounded = _controller.isGrounded;
 		}
 
-		private void CameraRotation()
-		{
+		private void CameraRotation() {
 			// if there is an input
-			if (_input.look.sqrMagnitude >= _threshold)
-			{
+			if (_input.look.sqrMagnitude >= _threshold) {
 				//Don't multiply mouse input by Time.deltaTime
 				float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 				
@@ -145,8 +134,7 @@ namespace StarterAssets
 			}
 		}
 
-		private void Move()
-		{
+		private void Move() {
 			// set target speed based on move speed, sprint speed and if sprint is pressed
 			float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
@@ -163,8 +151,7 @@ namespace StarterAssets
 			float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
 
 			// accelerate or decelerate to target speed
-			if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
-			{
+			if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset) {
 				// creates curved result rather than a linear one giving a more organic speed change
 				// note T in Lerp is clamped, so we don't need to clamp our speed
 				_speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
@@ -172,8 +159,7 @@ namespace StarterAssets
 				// round speed to 3 decimal places
 				_speed = Mathf.Round(_speed * 1000f) / 1000f;
 			}
-			else
-			{
+			else {
 				_speed = targetSpeed;
 			}
 
@@ -182,8 +168,7 @@ namespace StarterAssets
 
 			// note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
 			// if there is a move input rotate player when the player is moving
-			if (_input.move != Vector2.zero)
-			{
+			if (_input.move != Vector2.zero) {
 				// move
 				inputDirection = transform.right * _input.move.x + transform.forward * _input.move.y;
 			}
@@ -192,40 +177,33 @@ namespace StarterAssets
 			_controller.Move(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 		}
 
-		private void JumpAndGravity()
-		{
-			if (Grounded)
-			{
+		private void JumpAndGravity() {
+			if (Grounded) {
 				// reset the fall timeout timer
 				_fallTimeoutDelta = FallTimeout;
 
 				// stop our velocity dropping infinitely when grounded
-				if (_verticalVelocity < 0.0f)
-				{
+				if (_verticalVelocity < 0.0f) {
 					_verticalVelocity = -2f;
 				}
 
 				// Jump
-				if (_input.jump && _jumpTimeoutDelta <= 0.0f)
-				{
+				if (_input.jump && _jumpTimeoutDelta <= 0.0f) {
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
 					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
 				}
 
 				// jump timeout
-				if (_jumpTimeoutDelta >= 0.0f)
-				{
+				if (_jumpTimeoutDelta >= 0.0f) {
 					_jumpTimeoutDelta -= Time.deltaTime;
 				}
 			}
-			else
-			{
+			else {
 				// reset the jump timeout timer
 				_jumpTimeoutDelta = JumpTimeout;
 
 				// fall timeout
-				if (_fallTimeoutDelta >= 0.0f)
-				{
+				if (_fallTimeoutDelta >= 0.0f) {
 					_fallTimeoutDelta -= Time.deltaTime;
 				}
 
@@ -234,14 +212,12 @@ namespace StarterAssets
 			}
 
 			// apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
-			if (_verticalVelocity < _terminalVelocity)
-			{
+			if (_verticalVelocity < _terminalVelocity) {
 				_verticalVelocity += Gravity * Time.deltaTime;
 			}
 		}
 
-        private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
-        {
+        private static float ClampAngle(float lfAngle, float lfMin, float lfMax) {
             if (lfAngle < -360f) lfAngle += 360f;
             if (lfAngle > 360f) lfAngle -= 360f;
             return Mathf.Clamp(lfAngle, lfMin, lfMax);

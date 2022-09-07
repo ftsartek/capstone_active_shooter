@@ -20,12 +20,17 @@ public class ShooterAI : MonoBehaviour {
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject playerBody;
-    [SerializeField] private Vector3 rayOffset = new Vector3(0, 30, 0);
     [SerializeField] private GameObject marker;
+    [SerializeField] private GameObject bullet;
+
+    //Offsets
+    private static Vector3 rayOffset = new Vector3(0, 30, 0);
+    private static Vector3 bulletOffset = new Vector3(0, 10, 0);
 
     //Timers
     private static float wanderTime = 1000;
     private static float chaseTime = 50;
+    private static float bulletTime = 2;
 
     //Goals
     private static int goalCount = 20;
@@ -36,10 +41,15 @@ public class ShooterAI : MonoBehaviour {
     private static int goalRadius = 4000;
     private static float shotRadius = Mathf.Infinity;
 
+    private static float bulletForce = 500;
+
     private Vector3[] goals;
     private float timer;
     private State state = State.Wandering;
     private GameObject chaseTarget;
+
+    Vector3 startPoint;
+    Vector3 playerDirection;
 
     void OnEnable() {
         timer = wanderTime;
@@ -64,10 +74,9 @@ public class ShooterAI : MonoBehaviour {
 
     void FixedUpdate() {
         timer += Time.deltaTime;
+        startPoint = transform.position + rayOffset;
+        playerDirection = (player.transform.position + rayOffset) - startPoint;
 
-        Vector3 startPoint = transform.position + rayOffset;
-
-        Vector3 playerDirection = (player.transform.position + rayOffset) - startPoint;
         RaycastHit playerHit;
         bool hasHit = Physics.Raycast(startPoint, playerDirection, out playerHit, shotRadius);
 
@@ -128,6 +137,14 @@ public class ShooterAI : MonoBehaviour {
                 break;
         }
 
+    }
+
+    private void Update() {
+        if (state == State.Shooting && timer > bulletTime) {
+            timer = 0;
+            GameObject bulletInstance = Instantiate(bullet, startPoint + bulletOffset, transform.rotation);
+            bulletInstance.GetComponent<Rigidbody>().AddForce((playerDirection + bulletOffset) * bulletForce);
+        }
     }
 
     private bool pathComplete() {
