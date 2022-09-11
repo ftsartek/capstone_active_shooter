@@ -4,27 +4,31 @@ using UnityEngine;
 
 public class Exit : MonoBehaviour
 {
-    public EndMenu endMenu;
+    // end menu canvas
+    EndMenu endMenu;
 
-    // Start is called before the first frame update
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        GameObject endFrame = GameObject.Find("EndFrame");
+        endMenu = endFrame.GetComponent<EndMenu>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("hehe");
+        // deal with escaping player
         if (other.tag == "Player")
         {
+            Debug.Log("heheh");
             //end game
             endMenu.ToggleEndMenu(false);
 
+        }
+
+        // deal with escaping NPCs
+        if (other.tag == "NPC")
+        {
+            // make NPC disappear (attacker SHOULD NOT be tagged as NPC)
         }
     }
 }

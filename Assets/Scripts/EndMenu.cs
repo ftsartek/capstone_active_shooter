@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class EndMenu : MonoBehaviour
 
 {
-    public GameObject player;
+    // not sure if this is needed, maybe 
+    //public GameObject player;
 
     // Start is called before the first frame update
     void Start()
@@ -23,9 +24,14 @@ public class EndMenu : MonoBehaviour
 
     public void ToggleEndMenu(bool died)
     {
+        Debug.Log(gameObject);
+        // make menu appear 
         gameObject.SetActive(true);
+
+        // get text object
         TMPro.TextMeshProUGUI message = GetComponentInChildren(typeof(TMPro.TextMeshProUGUI)) as TMPro.TextMeshProUGUI;
         
+        // change message depending on win/lose 
         if (died == true)
         {
             message.text = "You died";
@@ -34,25 +40,27 @@ public class EndMenu : MonoBehaviour
             message.text = "You escaped";
         }
 
+        // makes cursor appear
         Cursor.lockState = CursorLockMode.None;
 
-        // Do we need to stop the attacker from attacking us ?
-        //Time.timeScale = 0;
-
-        CharacterController cc = player.GetComponent(typeof(CharacterController)) as CharacterController;
-        cc.enabled = false;
+        // stops all interactions while in the end menu, set back to 1 in tryAgain()
+        Time.timeScale = 0;
     }
 
+    // for now this function gets called upon button press but does nothing
     public void tryAgain()
     {
-        // call the game start again?
+        Time.timeScale = 1;
+        // call to start the game again?
     }
 
+    // quit gain upon button press
     public void quit()
     {
+        //works for both editor and when built
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
-        //Application.Quit();
+        Application.Quit();
     }
 }
