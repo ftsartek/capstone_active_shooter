@@ -1,43 +1,157 @@
 using System.Collections;
-using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem.HID;
 using static UnityEngine.Physics;
+using Quaternion = UnityEngine.Quaternion;
+using Vector3 = UnityEngine.Vector3;
+using Random = System.Random;
+using UnityEngine.UIElements;
+using System;
 
-public class ShooterAI : MonoBehaviour
-{
+enum State {
+    Wandering,
+    Shooting,
+    Chasing,
+    NewWanderGoal
+}
 
-    [SerializeField]
-    private NavMeshAgent agent;
+public class ShooterAI : MonoBehaviour {
+    [SerializeField] private NavMeshAgent agent;
+    [SerializeField] private GameObject player;
+    [SerializeField] private GameObject playerBody;
+    [SerializeField] private GameObject marker;
+    [SerializeField] private GameObject bullet;
 
-    [SerializeField]
-    private GameObject player;
+    //Offsets
+    private static Vector3 rayOffset = new Vector3(0, 30, 0);
+    private static Vector3 bulletOffset = new Vector3(0, 10, 0);
 
-    [SerializeField]
-    private GameObject playerBody;
+    //Timers
+    private static float wanderTime = 1000;
+    private static float chaseTime = 50;
+    private static float bulletTime = 2;
 
-    [SerializeField]
-    private Vector3 rayOffset = new Vector3(0, 30, 0);
+    //Goals
+    private static int goalCount = 20;
+    private static int goalOffset = 90;
 
-    [SerializeField]
-    private float maxShootingDistance = Mathf.Infinity;
+    //Distances
+    private static int chaseRadius = 2000;
+    private static int goalRadius = 4000;
+    private static float shotRadius = Mathf.Infinity;
+
+    private static float bulletForce = 500;
+
+    private Vector3[] goals;
+    private float timer;
+    private State state = State.Wandering;
+    private GameObject chaseTarget;
+
+    Vector3 startPoint;
+    Vector3 playerDirection;
+
+    void OnEnable() {
+        timer = wanderTime;
+
+        //TODO: Replace markers with less hacky way of showing goals
+        goals = new Vector3[goalCount];
+
+        for (int i = 0; i < goals.Length; i++) {
+            //choose a random place on the navmesh
+            Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * goalRadius;
+            randomDirection += transform.position;
+            NavMeshHit navHit;
+
+            NavMesh.SamplePosition(randomDirection, out navHit, goalRadius, 1);
+
+            goals[i] = navHit.position;
+            goals[i].y = player.transform.position.y + 20;
+
+            Instantiate(marker, goals[i], Quaternion.identity);
+        }
+    }
 
     void FixedUpdate() {
-        Vector3 startPoint = transform.position + rayOffset;
-        Vector3 rayDirection = (player.transform.position + rayOffset) - startPoint;
-        RaycastHit hit;
-        bool hasHit = Physics.Raycast(startPoint, rayDirection, out hit, maxShootingDistance);
+        timer += Time.deltaTime;
+        startPoint = transform.position + rayOffset;
+        playerDirection = (player.transform.position + rayOffset) - startPoint;
 
-        if (hasHit && hit.collider.gameObject.name == playerBody.name) {
-            agent.isStopped = true;
-            Debug.DrawRay(startPoint, rayDirection * hit.distance, Color.green);
-        }
-        else {
-            agent.isStopped = false;
-            agent.SetDestination(player.transform.position);
-            Debug.DrawRay(startPoint, rayDirection * hit.distance, Color.yellow);
+        RaycastHit playerHit;
+        bool hasHit = Physics.Raycast(startPoint, playerDirection, out playerHit, shotRadius);
+
+        if (state != State.Shooting && hasHit && playerHit.collider.gameObject.name == playerBody.name) {
+            state = State.Shooting;
         }
 
+        switch (state) {
+            case State.Shooting:
+                Debug.DrawRay(startPoint, playerDirection * playerHit.distance, Color.green);
+
+                agent.isStopped = true;
+                chaseTarget = player;
+
+                if(!hasHit || playerHit.collider.gameObject.name != playerBody.name) {
+                    Debug.Log("chase begun");
+
+                    timer = 0;
+                    state = State.Chasing;
+                }
+
+                break;
+
+            case State.Chasing:
+                Debug.DrawRay(startPoint, playerDirection * playerHit.distance, Color.yellow);
+
+                agent.isStopped = false;
+                agent.SetDestination(chaseTarget.transform.position);
+
+                if (Vector3.Distance(agent.destination, agent.transform.position) > chaseRadius
+                        || timer >= chaseTime) {
+                    state = State.NewWanderGoal;
+                }
+
+                break;
+
+            case State.NewWanderGoal:
+                //this is its own state as it can be troggered by two actions
+                Debug.DrawRay(startPoint, playerDirection * playerHit.distance, Color.red);
+                Debug.Log("new random target chosen");
+
+                agent.isStopped = false;
+                chaseTarget = null;
+
+                state = State.Wandering;
+                timer = 0;
+
+                Random random = new Random();
+                agent.SetDestination(goals[random.Next(0, goals.Length)]);
+                break;
+
+            case State.Wandering:
+                agent.isStopped = false;
+
+                if (timer >= wanderTime || pathComplete()) {
+                    state = State.NewWanderGoal;
+                }
+                break;
+        }
+
+    }
+
+    private void Update() {
+        if (state == State.Shooting && timer > bulletTime) {
+            timer = 0;
+            GameObject bulletInstance = Instantiate(bullet, startPoint + bulletOffset, transform.rotation);
+            bulletInstance.GetComponent<Rigidbody>().AddForce((playerDirection + bulletOffset) * bulletForce);
+        }
+    }
+
+    private bool pathComplete() {
+        if (Vector3.Distance(agent.destination, agent.transform.position) <= goalOffset) {
+            return !agent.hasPath || agent.velocity.sqrMagnitude == 0f;
+        }
+
+        return false;
     }
 }
