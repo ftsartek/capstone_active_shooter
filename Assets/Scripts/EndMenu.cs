@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class EndMenu : MonoBehaviour
@@ -52,6 +53,7 @@ public class EndMenu : MonoBehaviour
     {
         Time.timeScale = 1;
         // call to start the game again?
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     // quit gain upon button press

@@ -13,7 +13,8 @@ enum State {
     Wandering,
     Shooting,
     Chasing,
-    NewWanderGoal
+    NewWanderGoal,
+    Exiting
 }
 
 public class ShooterAI : MonoBehaviour {
@@ -30,6 +31,7 @@ public class ShooterAI : MonoBehaviour {
     //Timers
     private static float wanderTime = 1000;
     private static float chaseTime = 50;
+    private static float exitTime = 5000;
     private static float bulletTime = 2;
 
     //Goals
@@ -45,6 +47,7 @@ public class ShooterAI : MonoBehaviour {
 
     private Vector3[] goals;
     private float timer;
+    private float exitTimer;
     private State state = State.Wandering;
     private GameObject chaseTarget;
 
@@ -53,6 +56,7 @@ public class ShooterAI : MonoBehaviour {
 
     void OnEnable() {
         timer = wanderTime;
+        exitTimer = 0;
 
         //TODO: Replace markers with less hacky way of showing goals
         goals = new Vector3[goalCount];
@@ -74,13 +78,18 @@ public class ShooterAI : MonoBehaviour {
 
     void FixedUpdate() {
         timer += Time.deltaTime;
+        exitTimer += Time.deltaTime;
+
         startPoint = transform.position + rayOffset;
         playerDirection = (player.transform.position + rayOffset) - startPoint;
 
         RaycastHit playerHit;
         bool hasHit = Physics.Raycast(startPoint, playerDirection, out playerHit, shotRadius);
 
-        if (state != State.Shooting && hasHit && playerHit.collider.gameObject.name == playerBody.name) {
+        if (state != State.Exiting && exitTimer > exitTime) {
+            state = State.Exiting;
+        }
+        else if (state != State.Shooting && hasHit && playerHit.collider.gameObject.name == playerBody.name) {
             state = State.Shooting;
         }
 
@@ -134,6 +143,12 @@ public class ShooterAI : MonoBehaviour {
                 if (timer >= wanderTime || pathComplete()) {
                     state = State.NewWanderGoal;
                 }
+                break;
+
+            case State.Exiting:
+                Debug.Log("exiting");
+
+                agent.SetDestination(GameObject.Find("MainExit").transform.position);
                 break;
         }
 

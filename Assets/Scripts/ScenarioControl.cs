@@ -3,11 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ScenarioControl : MonoBehaviour {
-    private static string shot = "You have been shot!";
+    public static int maxBullets = 2;
 
-    private static int maxBullets = 4;
     private int bulletHits = 0;
-    private bool killed = false;
+    private float timer;
+
+    private EndMenu endMenu;
+
+    void OnEnable() {
+        GameObject endFrame = GameObject.Find("EndFrame");
+        endMenu = endFrame.GetComponent<EndMenu>();
+
+
+        bulletHits = 0;
+    }
 
     void OnCollisionEnter(Collision collision) {
         if (!collision.gameObject.name.StartsWith("Bullet")) return;
@@ -18,14 +27,7 @@ public class ScenarioControl : MonoBehaviour {
             Debug.Log("Hit!");
         }
         else {
-            killed = true;
-            Time.timeScale = 0;
-        }
-    }
-
-    void OnGUI() {
-        if (killed) {
-            GUI.Label(new Rect(Screen.width / 2 - 50, Screen.height / 2 - 10, 500, 500), shot);
+            endMenu.ToggleEndMenu(true);
         }
     }
 }
