@@ -7,6 +7,8 @@ TagManager:
   - CinemachineTarget
   - MainExit
   - SecondaryExit
+  - Shooter
+  - Terrain
   layers:
   - Default
   - TransparentFX

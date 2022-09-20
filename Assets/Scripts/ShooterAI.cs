@@ -18,7 +18,7 @@ public enum State {
 }
 
 public class ShooterAI : MonoBehaviour {
-    public bool hasMarkers;
+    public bool hasMarkers = true;
 
     private NavMeshAgent agent;
     private GameObject player;
@@ -27,31 +27,32 @@ public class ShooterAI : MonoBehaviour {
     private GameObject bullet;
 
     //Offsets
-    private static Vector3 rayOffset = new Vector3(0, 30, 0);
-    private static Vector3 bulletOffset = new Vector3(0, 10, 0);
+    private static Vector3 rayOffset = new Vector3(0, 0.5f, 0);
+    private static Vector3 bulletOffset = new Vector3(0, 0.2f, 0);
 
     //Timers
     private static float wanderTime = 1000;
     private static float chaseTime = 50;
     private static float exitTime = 5000;
-    private static float bulletTime = 2;
+    private static float bulletTime = 1;
 
     //Goals
     private static int goalCount = 20;
-    private static int goalOffset = 90;
+    private static float goalOffset = 2;
+    private static float goalVOffset = 0.1f;
 
     //Distances
-    private static int chaseRadius = 2000;
-    private static int goalRadius = 4000;
+    public static int chaseRadius = 50;
+    public static int goalRadius = 100;
     private static float shotRadius = Mathf.Infinity;
 
-    private static float bulletForce = 500;
+    private static float bulletForce = 1000;
 
-    public Vector3[] goals;
-    public float timer;
-    public float exitTimer;
-    public State state = State.Wandering;
-    public GameObject chaseTarget;
+    [HideInInspector] public Vector3[] goals;
+    [HideInInspector] public float timer;
+    [HideInInspector] public float exitTimer;
+    [HideInInspector] public State state = State.Wandering;
+    [HideInInspector] public GameObject chaseTarget;
 
     Vector3 startPoint;
     Vector3 playerDirection;
@@ -80,9 +81,11 @@ public class ShooterAI : MonoBehaviour {
             NavMesh.SamplePosition(randomDirection, out navHit, goalRadius, 1);
 
             goals[i] = navHit.position;
-            goals[i].y = player.transform.position.y + 20;
+            goals[i].y = player.transform.position.y + goalVOffset;
 
-            Instantiate(marker, goals[i], Quaternion.identity);
+            if (hasMarkers) {
+                Instantiate(marker, goals[i], Quaternion.identity);
+            }
         }
     }
 
@@ -168,7 +171,7 @@ public class ShooterAI : MonoBehaviour {
         if (state == State.Shooting && timer > bulletTime) {
             timer = 0;
             GameObject bulletInstance = Instantiate(bullet, startPoint + bulletOffset, transform.rotation);
-            bulletInstance.GetComponent<Rigidbody>().AddForce((playerDirection + bulletOffset) * bulletForce);
+            bulletInstance.GetComponent<Rigidbody>().AddForce(playerDirection * bulletForce);
         }
     }
 
