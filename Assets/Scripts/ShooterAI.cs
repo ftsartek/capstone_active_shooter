@@ -9,7 +9,7 @@ using Random = System.Random;
 using UnityEngine.UIElements;
 using System;
 
-enum State {
+public enum State {
     Wandering,
     Shooting,
     Chasing,
@@ -18,11 +18,13 @@ enum State {
 }
 
 public class ShooterAI : MonoBehaviour {
-    [SerializeField] private NavMeshAgent agent;
-    [SerializeField] private GameObject player;
-    [SerializeField] private GameObject playerBody;
-    [SerializeField] private GameObject marker;
-    [SerializeField] private GameObject bullet;
+    public bool hasMarkers;
+
+    private NavMeshAgent agent;
+    private GameObject player;
+    private GameObject playerBody;
+    private GameObject marker;
+    private GameObject bullet;
 
     //Offsets
     private static Vector3 rayOffset = new Vector3(0, 30, 0);
@@ -45,14 +47,22 @@ public class ShooterAI : MonoBehaviour {
 
     private static float bulletForce = 500;
 
-    private Vector3[] goals;
-    private float timer;
-    private float exitTimer;
-    private State state = State.Wandering;
-    private GameObject chaseTarget;
+    public Vector3[] goals;
+    public float timer;
+    public float exitTimer;
+    public State state = State.Wandering;
+    public GameObject chaseTarget;
 
     Vector3 startPoint;
     Vector3 playerDirection;
+
+    private void Awake() {
+        agent = this.GetComponent<NavMeshAgent>();
+        player = GameObject.Find("Player");
+        playerBody = GameObject.Find("PlayerBody");
+        marker = (GameObject) Resources.Load("Marker");
+        bullet = (GameObject) Resources.Load("Bullet");
+    }
 
     void OnEnable() {
         timer = wanderTime;
