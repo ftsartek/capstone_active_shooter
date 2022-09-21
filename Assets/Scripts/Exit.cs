@@ -15,20 +15,25 @@ public class Exit : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("hehe");
         // deal with escaping player
         if (other.tag == "Player")
         {
-            Debug.Log("heheh");
+            Debug.Log("Exit triggered by player");
             //end game
             endMenu.ToggleEndMenu(false);
-
         }
 
         // deal with escaping NPCs
         if (other.tag == "NPC")
         {
-            // make NPC disappear (attacker SHOULD NOT be tagged as NPC)
+            // make NPC disappear
+        }
+
+        if (other.tag == "Shooter")
+        {
+            Debug.Log("Exit triggered by shooter");
+            //end game
+            endMenu.ToggleEndMenu(false);
         }
     }
 }
