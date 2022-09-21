@@ -18,13 +18,15 @@ public enum State {
 }
 
 public class ShooterAI : MonoBehaviour {
-    public bool hasMarkers = true;
-
     private NavMeshAgent agent;
     private GameObject player;
     private GameObject playerBody;
     private GameObject marker;
     private GameObject bullet;
+
+    //Settings
+    public bool hasMarkers = true;
+    public bool constantY = false;
 
     //Offsets
     private static Vector3 rayOffset = new Vector3(0, 0.5f, 0);
@@ -54,8 +56,10 @@ public class ShooterAI : MonoBehaviour {
     [HideInInspector] public State state = State.Wandering;
     [HideInInspector] public GameObject chaseTarget;
 
-    Vector3 startPoint;
-    Vector3 playerDirection;
+    private Random random = new Random();
+
+    private Vector3 startPoint;
+    private Vector3 playerDirection;
 
     private void Awake() {
         agent = this.GetComponent<NavMeshAgent>();
@@ -81,7 +85,10 @@ public class ShooterAI : MonoBehaviour {
             NavMesh.SamplePosition(randomDirection, out navHit, goalRadius, 1);
 
             goals[i] = navHit.position;
-            goals[i].y = player.transform.position.y + goalVOffset;
+
+            if (constantY) {
+                goals[i].y = player.transform.position.y + goalVOffset;
+            }
 
             if (hasMarkers) {
                 Instantiate(marker, goals[i], Quaternion.identity);
@@ -146,8 +153,7 @@ public class ShooterAI : MonoBehaviour {
                 state = State.Wandering;
                 timer = 0;
 
-                Random random = new Random();
-                agent.SetDestination(goals[random.Next(0, goals.Length)]);
+                agent.SetDestination(generateNextGoal());
                 break;
 
             case State.Wandering:
@@ -173,6 +179,26 @@ public class ShooterAI : MonoBehaviour {
             GameObject bulletInstance = Instantiate(bullet, startPoint + bulletOffset, transform.rotation);
             bulletInstance.GetComponent<Rigidbody>().AddForce(playerDirection * bulletForce);
         }
+    }
+
+    private Vector3 generateNextGoal() {
+        //generate a goal that is random but not too close to the current one
+        //currently furthest out of n iterations but could change
+
+        Vector3 furthest = goals[0];
+        float furthestDistance = 0;
+
+        for (int i = 0; i < 2; i++) {
+            Vector3 candidate = goals[random.Next(0, goals.Length)];
+            float candidateDistance = Vector3.Distance(candidate, transform.position);
+
+            if (candidateDistance > furthestDistance) {
+                furthest = candidate;
+                furthestDistance = candidateDistance;
+            }
+        }
+
+        return furthest;
     }
 
     private bool pathComplete() {
