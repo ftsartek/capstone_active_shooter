@@ -30,7 +30,7 @@ public class ShooterAI : MonoBehaviour {
 
     //Offsets
     private static Vector3 rayOffset = new Vector3(0, 0.5f, 0);
-    private static Vector3 bulletOffset = new Vector3(0, 0.2f, 0);
+    private static Vector3 bulletOffset = new Vector3(0, 0.7f, 0);
 
     //Timers
     private static float wanderTime = 1000;
@@ -57,9 +57,6 @@ public class ShooterAI : MonoBehaviour {
     [HideInInspector] public GameObject chaseTarget;
 
     private Random random = new Random();
-
-    private Vector3 startPoint;
-    private Vector3 playerDirection;
 
     private void Awake() {
         agent = this.GetComponent<NavMeshAgent>();
@@ -100,8 +97,8 @@ public class ShooterAI : MonoBehaviour {
         timer += Time.deltaTime;
         exitTimer += Time.deltaTime;
 
-        startPoint = transform.position + rayOffset;
-        playerDirection = (player.transform.position + rayOffset) - startPoint;
+        Vector3 startPoint = transform.position + rayOffset;
+        Vector3 playerDirection = (player.transform.position + rayOffset) - startPoint;
 
         RaycastHit playerHit;
         bool hasHit = Physics.Raycast(startPoint, playerDirection, out playerHit, shotRadius);
@@ -175,8 +172,11 @@ public class ShooterAI : MonoBehaviour {
 
     private void Update() {
         if (state == State.Shooting && timer > bulletTime) {
+            Vector3 startPoint = transform.position + bulletOffset;
+            Vector3 playerDirection = (player.transform.position + bulletOffset) - startPoint;
+
             timer = 0;
-            GameObject bulletInstance = Instantiate(bullet, startPoint + bulletOffset, transform.rotation);
+            GameObject bulletInstance = Instantiate(bullet, startPoint, transform.rotation);
             bulletInstance.GetComponent<Rigidbody>().AddForce(playerDirection * bulletForce);
         }
     }

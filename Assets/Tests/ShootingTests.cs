@@ -13,14 +13,11 @@ public class ShootingTests {
     private float timeout = 30f;
 
     [UnityTest] public IEnumerator PlayerTargeted() {
-        LogAssert.ignoreFailingMessages = true;
         SceneManager.LoadScene("Scenes/Testing/TestScene", LoadSceneMode.Single);
         yield return new WaitForSeconds(4f); //wait for scene to initialise
 
         ScenarioControl scenario = GameObject.Find("PlayerBody").GetComponent<ScenarioControl>();
-
-        scenario.debug = true;
-        Assert.That(scenario != null);
+        Assert.That(scenario != null && scenario.debug);
 
         float timer = 0f;
 
@@ -30,5 +27,6 @@ public class ShootingTests {
         }
 
         Assert.That(scenario.dead);
+        LogAssert.ignoreFailingMessages = true;
     }
 }

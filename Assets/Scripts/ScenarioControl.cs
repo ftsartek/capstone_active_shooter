@@ -31,6 +31,7 @@ public class ScenarioControl : MonoBehaviour {
             Debug.Log("Hit!");
         }
         else {
+            Debug.Log("Killed!");
             dead = true;
 
             if (!debug) {
