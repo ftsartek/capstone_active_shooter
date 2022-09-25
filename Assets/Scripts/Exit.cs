@@ -5,16 +5,26 @@ using UnityEngine;
 public class Exit : MonoBehaviour
 {
     // end menu canvas
-    EndMenu endMenu;
+    EndMenuScript endMenu;
+
+    // literally just here for the trigger unit test
+    public string colliding = "";
 
     void Start()
     {
         GameObject endFrame = GameObject.Find("EndFrame");
-        endMenu = endFrame.GetComponent<EndMenu>();
+        //Debug.Log("starting");
+        endMenu = endFrame.GetComponent<EndMenuScript>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        //Debug.Log("trigger1");
+        //Debug.Log(colliding);
+        //Debug.Log("tigger2");
+        colliding = other.tag;
+        //Debug.Log(colliding);
+
         // deal with escaping player
         if (other.tag == "Player")
         {

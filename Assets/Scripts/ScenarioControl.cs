@@ -11,12 +11,12 @@ public class ScenarioControl : MonoBehaviour {
     private int bulletHits = 0;
     private float timer;
 
-    private EndMenu endMenu;
+    private EndMenuScript endMenu;
 
     void OnEnable() {
         if (!debug) {
             GameObject endFrame = GameObject.Find("EndFrame");
-            endMenu = endFrame.GetComponent<EndMenu>();
+            endMenu = endFrame.GetComponent<EndMenuScript>();
         }
 
         bulletHits = 0;
