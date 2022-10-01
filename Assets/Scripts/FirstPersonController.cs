@@ -42,8 +42,12 @@ namespace StarterAssets {
 		[Tooltip("How far in degrees can you move the camera down")]
 		public float BottomClamp = -90.0f;
 
-		// cinemachine
-		private float _cinemachineTargetPitch;
+		[Space(10)]
+        [Tooltip("How near attacks must be for them to work")]
+        public float AttackLimit = 1f;
+
+        // cinemachine
+        private float _cinemachineTargetPitch;
 
 		// player
 		private float _speed;
@@ -209,10 +213,12 @@ namespace StarterAssets {
                 bool hasHit = Physics.Raycast(ray, out shooterHit);
 
 				if (hasHit && shooterHit.collider.tag == "Shooter") {
-					//for now, we allow attacks from any direction, as you'll most
-					//likely die before sucessfully attacking from the front
-					_scenario.Attack();
-				}
+                    //for now, we allow attacks from any direction, as you'll most
+                    //likely die before sucessfully attacking from the front
+                    if (Vector3.Distance(shooterHit.transform.position, transform.position) <= AttackLimit) {
+                        _scenario.Attack();
+                    }
+                }
 				_input.attack = false;
 			}
         }
