@@ -35,7 +35,7 @@ public class ShooterAI : MonoBehaviour {
     //Timers
     private static float wanderTime = 1000;
     private static float chaseTime = 50;
-    private static float exitTime = 5000;
+    public float exitTime = 5000;
     private static float bulletTime = 1;
 
     //Goals

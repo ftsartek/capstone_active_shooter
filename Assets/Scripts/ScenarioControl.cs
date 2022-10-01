@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ScenarioControl : MonoBehaviour {
-    public bool debug = false;
     public static int maxBullets = 2;
     [HideInInspector] public bool dead = false;
 
@@ -14,10 +13,8 @@ public class ScenarioControl : MonoBehaviour {
     private EndMenuScript endMenu;
 
     void OnEnable() {
-        if (!debug) {
-            GameObject endFrame = GameObject.Find("EndFrame");
-            endMenu = endFrame.GetComponent<EndMenuScript>();
-        }
+        GameObject endFrame = GameObject.Find("EndFrame");
+        endMenu = endFrame.GetComponent<EndMenuScript>();
 
         bulletHits = 0;
     }
@@ -34,9 +31,7 @@ public class ScenarioControl : MonoBehaviour {
             Debug.Log("Killed!");
             dead = true;
 
-            if (!debug) {
-                endMenu.ToggleEndMenu(true);
-            }
+            endMenu.ToggleEndMenu(true);
         }
     }
 }
