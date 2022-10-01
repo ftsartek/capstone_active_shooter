@@ -61,7 +61,7 @@ public class ShooterAI : MonoBehaviour {
     private void Awake() {
         agent = this.GetComponent<NavMeshAgent>();
         player = GameObject.Find("Player");
-        playerBody = GameObject.Find("PlayerBody");
+        playerBody = player.transform.Find("PlayerBody").gameObject;
         marker = (GameObject) Resources.Load("Marker");
         bullet = (GameObject) Resources.Load("Bullet");
     }
@@ -102,12 +102,14 @@ public class ShooterAI : MonoBehaviour {
 
         RaycastHit playerHit;
         bool hasHit = Physics.Raycast(startPoint, playerDirection, out playerHit, shotRadius);
+        GameObject closestTarget = getTarget(hasHit, playerHit);
 
         if (state != State.Exiting && exitTimer > exitTime) {
             state = State.Exiting;
         }
-        else if (state != State.Shooting && hasHit && playerHit.collider.gameObject.name == playerBody.name) {
+        else if (state != State.Shooting && closestTarget != null) {
             state = State.Shooting;
+            chaseTarget = player;
         }
 
         switch (state) {
@@ -117,11 +119,16 @@ public class ShooterAI : MonoBehaviour {
                 agent.isStopped = true;
                 chaseTarget = player;
 
-                if(!hasHit || playerHit.collider.gameObject.name != playerBody.name) {
+                if (!closestTarget) {
                     Debug.Log("chase begun");
 
                     timer = 0;
                     state = State.Chasing;
+                }
+                else if (closestTarget != chaseTarget) {
+                    //focus on the closest target, not follow the first to the ends of the earth
+                    //i.e. if one wanders out of sight but another is closer, target that instead
+                    chaseTarget = closestTarget;
                 }
 
                 break;
@@ -199,6 +206,18 @@ public class ShooterAI : MonoBehaviour {
         }
 
         return furthest;
+    }
+
+    private GameObject getTarget(bool enable, RaycastHit hit) {
+        if (!enable) return null;
+
+        if (hit.collider.gameObject.name == playerBody.name) {
+            return playerBody.transform.parent.gameObject;
+        }
+        else if (hit.collider.gameObject.tag == "InnocentAI") {
+            return hit.collider.gameObject;
+        }
+        return null;
     }
 
     private bool pathComplete() {
