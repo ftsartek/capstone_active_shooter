@@ -69,6 +69,9 @@ namespace StarterAssets {
 
         private const float _threshold = 0.01f;
 
+		// start points
+		private GameObject startpoint;
+
 		private bool IsCurrentDeviceMouse {
 			get {
 				return _playerInput.currentControlScheme == "KeyboardMouse";
@@ -86,6 +89,19 @@ namespace StarterAssets {
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
+
+			// get possible spawn points
+			GameObject[] spawnList = GameObject.FindGameObjectsWithTag("PlayerSpawn");
+			// get a random spawn point
+			startpoint = spawnList[Random.Range(0, spawnList.Length)];
+			// teleport player to location
+			transform.position = startpoint.transform.position;
+
+			// make the spawn markers disappear
+			for (int i = 0; i < spawnList.Length; i++)
+            {
+				spawnList[i].SetActive(false);
+			}
 		}
 
 		private void Update() {

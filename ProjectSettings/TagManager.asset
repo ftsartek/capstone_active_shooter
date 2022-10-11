@@ -9,6 +9,7 @@ TagManager:
   - SecondaryExit
   - Shooter
   - Terrain
+  - PlayerSpawn
   layers:
   - Default
   - TransparentFX
