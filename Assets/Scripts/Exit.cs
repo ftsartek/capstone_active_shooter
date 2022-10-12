@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+//using ShooterClass = ShooterAI;
 
 public class Exit : MonoBehaviour
 {
@@ -13,17 +14,12 @@ public class Exit : MonoBehaviour
     void Start()
     {
         GameObject endFrame = GameObject.Find("EndFrame");
-        //Debug.Log("starting");
         endMenu = endFrame.GetComponent<EndMenuScript>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        //Debug.Log("trigger1");
-        //Debug.Log(colliding);
-        //Debug.Log("tigger2");
         colliding = other.tag;
-        //Debug.Log(colliding);
 
         // deal with escaping player
         if (other.tag == "Player")
@@ -41,9 +37,14 @@ public class Exit : MonoBehaviour
 
         if (other.tag == "Shooter")
         {
-            Debug.Log("Exit triggered by shooter");
-            //end game
-            endMenu.ToggleEndMenu(false);
+            // check the shooter wants to exit
+            if (other.transform.parent.gameObject.GetComponent<ShooterAI>().state == State.Exiting)
+            {
+                Debug.Log("Exit triggered by shooter");
+                //end game
+                endMenu.ToggleEndMenu(false);
+            }
+            
         }
     }
 }
