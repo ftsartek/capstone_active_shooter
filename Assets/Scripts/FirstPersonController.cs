@@ -69,8 +69,6 @@ namespace StarterAssets {
 
         private const float _threshold = 0.01f;
 
-		// start points
-		private GameObject startpoint;
 
 		private bool IsCurrentDeviceMouse {
 			get {
@@ -93,7 +91,7 @@ namespace StarterAssets {
 			// get possible spawn points
 			GameObject[] spawnList = GameObject.FindGameObjectsWithTag("PlayerSpawn");
 			// get a random spawn point
-			startpoint = spawnList[Random.Range(0, spawnList.Length)];
+			GameObject startpoint = spawnList[Random.Range(0, spawnList.Length)];
 			// teleport player to location
 			transform.position = startpoint.transform.position;
 

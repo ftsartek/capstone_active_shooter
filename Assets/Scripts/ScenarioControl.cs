@@ -17,6 +17,18 @@ public class ScenarioControl : MonoBehaviour {
         endMenu = endFrame.GetComponent<EndMenuScript>();
 
         bulletHits = 0;
+
+        // get shooter object
+        GameObject shooter = GameObject.FindGameObjectWithTag("Shooter");
+
+        // get door the shooter will enter from 
+        GameObject[] EntranceList = GameObject.FindGameObjectsWithTag("MainExit");
+        GameObject entrance = EntranceList[Random.Range(0, EntranceList.Length)];
+
+        // teleport shooter 
+        shooter.SetActive(false);
+        shooter.transform.position = entrance.transform.position;
+        shooter.SetActive(true);
     }
 
     private void OnCollisionEnter(Collision collision) {
