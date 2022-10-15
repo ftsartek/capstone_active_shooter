@@ -392,11 +392,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55919ac34a26952479f3fc91f777b2fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 2.5
-  SprintSpeed: 5
-  RotationSpeed: 5
-  SpeedChangeRate: 10
-  JumpHeight: 2
+  MoveSpeed: 3.6
+  SprintSpeed: 3.9
+  RotationSpeed: 4
+  SpeedChangeRate: 2
+  JumpHeight: 2.3
   Gravity: -10
   JumpTimeout: 0.01
   FallTimeout: 0.15
@@ -407,6 +407,8 @@ MonoBehaviour:
   CameraTarget: {fileID: 2726560381962316015}
   TopClamp: 200
   BottomClamp: -200
+  AttackLimit: 1.6
+  FixedSpawn: 0
 --- !u!114 &2726560382232891056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -440,6 +442,7 @@ MonoBehaviour:
   look: {x: 0, y: 0}
   jump: 0
   sprint: 0
+  attack: 0
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1

@@ -44,7 +44,7 @@ namespace StarterAssets {
 
 		[Space(10)]
         [Tooltip("How near attacks must be for them to work")]
-        public float AttackLimit = 1f;
+        public float AttackLimit = 1.6f;
 		public bool FixedSpawn = false;
 
         // cinemachine
@@ -67,6 +67,7 @@ namespace StarterAssets {
 
         private Camera _camera;
         private ScenarioControl _scenario;
+		private GameObject _shooter;
 
         private const float _threshold = 0.01f;
 
@@ -84,6 +85,7 @@ namespace StarterAssets {
 
             _camera = CameraTarget.GetComponent<Camera>();
 			_scenario = transform.Find("PlayerBody").GetComponent<ScenarioControl>();
+			_shooter = GameObject.Find("ShooterBody").gameObject;
 
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
@@ -226,12 +228,15 @@ namespace StarterAssets {
 		private void Attack() {
 			if (_input.attack) {
 				Ray ray = _camera.ScreenPointToRay(_input.look);
+
                 RaycastHit shooterHit;
-                bool hasHit = Physics.Raycast(ray, out shooterHit);
+                Vector3 direction = (_shooter.transform.position) - transform.position;
+                bool hasHit = Physics.Raycast(transform.position, direction, out shooterHit);
 
 				if (hasHit && shooterHit.collider.tag == "Shooter") {
-                    //for now, we allow attacks from any direction, as you'll most
-                    //likely die before sucessfully attacking from the front
+					//for now, we allow attacks from any direction, as you'll most
+					//likely die before sucessfully attacking from the front
+
                     if (Vector3.Distance(shooterHit.transform.position, transform.position) <= AttackLimit) {
                         _scenario.Attack();
                     }

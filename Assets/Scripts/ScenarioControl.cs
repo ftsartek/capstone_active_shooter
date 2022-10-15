@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ScenarioControl : MonoBehaviour {
-    public static int maxBullets = 2;
+    public static int maxBullets = 3;
     public static int maxAttacks = 4;
     [HideInInspector] public bool dead = false;
 

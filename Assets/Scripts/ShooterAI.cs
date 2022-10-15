@@ -44,7 +44,7 @@ public class ShooterAI : MonoBehaviour {
     private static float goalVOffset = 0.1f;
 
     //Distances
-    public static int chaseRadius = 50;
+    public static int chaseRadius = 14;
     public static int goalRadius = 100;
     private static float shotRadius = Mathf.Infinity;
 
@@ -190,22 +190,30 @@ public class ShooterAI : MonoBehaviour {
 
     private Vector3 generateNextGoal() {
         //generate a goal that is random but not too close to the current one
-        //currently furthest out of n iterations but could change
+        //currently furthest out of n iterations (with slight bias to the player) but could change
 
-        Vector3 furthest = goals[0];
-        float furthestDistance = 0;
+        Vector3 best = goals[0];
+        float bestShooterDistance = 0;
+        float bestPlayerDistance = 0;
 
         for (int i = 0; i < 2; i++) {
             Vector3 candidate = goals[random.Next(0, goals.Length)];
-            float candidateDistance = Vector3.Distance(candidate, transform.position);
 
-            if (candidateDistance > furthestDistance) {
-                furthest = candidate;
-                furthestDistance = candidateDistance;
+            //distance to the shooter (further is better), and distance to the player (closer is better)
+            float shooterDistance = Vector3.Distance(candidate, transform.position);
+            float playerDistance = Vector3.Distance(candidate, player.transform.position);
+
+            if (shooterDistance > bestShooterDistance) {
+                best = candidate;
+                bestShooterDistance = shooterDistance;
+            }
+            else if (random.Next(0,10) <= 4 && playerDistance < bestPlayerDistance) {
+                best = candidate;
+                bestPlayerDistance = playerDistance;
             }
         }
 
-        return furthest;
+        return best;
     }
 
     private GameObject getTarget(bool enable, RaycastHit hit) {
