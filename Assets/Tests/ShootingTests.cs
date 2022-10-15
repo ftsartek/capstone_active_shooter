@@ -49,6 +49,9 @@ public class ShootingTests {
         Vector3 exit = GameObject.Find("MainExit").transform.position;
         Assert.That(shooter != null && exit != null);
 
+        EndMenuScript endmenu = GameObject.Find("EndFrame").GetComponent<EndMenuScript>();
+        endmenu.debug = false;
+
         shooter.GetComponent<ShooterAI>().exitTime = 5f;
         float timer = 0f;
 

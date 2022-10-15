@@ -229,6 +229,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EndFrame
       objectReference: {fileID: 0}
+    - target: {fileID: 2956483036235954104, guid: 6513f22623fc7b243a4eb3c3bfb2663f, type: 3}
+      propertyPath: debug
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2956483036235954108, guid: 6513f22623fc7b243a4eb3c3bfb2663f, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -487,6 +491,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2726560381733110955, guid: a20ccbe8935d4426eb223e751c5f0720, type: 3}
       propertyPath: debug
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2726560382232891057, guid: a20ccbe8935d4426eb223e751c5f0720, type: 3}
+      propertyPath: FixedSpawn
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2726560382232891059, guid: a20ccbe8935d4426eb223e751c5f0720, type: 3}

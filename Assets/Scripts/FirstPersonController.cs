@@ -45,6 +45,7 @@ namespace StarterAssets {
 		[Space(10)]
         [Tooltip("How near attacks must be for them to work")]
         public float AttackLimit = 1f;
+		public bool FixedSpawn = false;
 
         // cinemachine
         private float _cinemachineTargetPitch;
@@ -87,6 +88,8 @@ namespace StarterAssets {
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
+
+			if (FixedSpawn) return;
 
 			// get possible spawn points
 			GameObject[] spawnList = GameObject.FindGameObjectsWithTag("PlayerSpawn");

@@ -11,7 +11,8 @@ public class EndMenuScript : MonoBehaviour
     //public GameObject player;
 
     private GameObject endMenu;
-    
+    public bool debug = false;
+
 
     // Start is called before the first frame update
     void Start()
@@ -52,9 +53,11 @@ public class EndMenuScript : MonoBehaviour
         // makes cursor appear
         Cursor.lockState = CursorLockMode.None;
 
-        // stops all interactions while in the end menu, set back to 1 in tryAgain()
-        // This needs to be commented for the trigger test to pass 
-        Time.timeScale = 0;
+        if (!debug) {
+            // stops all interactions while in the end menu, set back to 1 in tryAgain()
+            // This needs to be commented for the trigger test to pass
+            Time.timeScale = 0;
+        }
     }
 
     // for now this function gets called upon button press but does nothing
