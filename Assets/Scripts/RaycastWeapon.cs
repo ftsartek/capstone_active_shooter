@@ -12,7 +12,7 @@ public class RaycastWeapon : MonoBehaviour
     }
 
     public bool isFiring = false;
-    public int fireRate = 25;
+    public float fireRate = 0.001f;
     public float bulletSpeed = 1000.0f;
     public float bulletDrop = 0.0f;
     public float damage = 10.0f;
@@ -21,6 +21,7 @@ public class RaycastWeapon : MonoBehaviour
     public TrailRenderer tracerEffect;
     public Transform raycastOrigin;
     public AudioClip ShootingAudio;
+    [Range(0, 1)] public float ShootingAudioVolume = 0.5f;
 
     Ray ray;
     RaycastHit hitInfo;
@@ -58,6 +59,7 @@ public class RaycastWeapon : MonoBehaviour
 
 // Add to shooterAi
     public void UpdateFiring(float deltaTime, Vector3 target) {
+      Debug.Log("PewPew");
       accumulatedTime += deltaTime;
       float fireInterval = 1.0f / fireRate;
       while(accumulatedTime >= 0.0f){
@@ -111,7 +113,7 @@ public class RaycastWeapon : MonoBehaviour
     private void FireBullet(Vector3 target) {
         foreach(var particle in muzzleFlash){
         particle.Emit(1);
-        // AudioSource.PlayOneShot(ShootingAudio,0.5f);
+        AudioSource.PlayClipAtPoint(ShootingAudio, ray.origin, ShootingAudioVolume);
         }
 
         Vector3 velocity = (target - raycastOrigin.position).normalized * bulletSpeed;

@@ -7,15 +7,25 @@ public class AiWeapons : MonoBehaviour
   RaycastWeapon currentWeapon;
   WeaponIK WeaponIk;
   Transform currentTarget;
+  bool weaponActive = false;
 
-  private void Awake() {
+  private void Start() {
     WeaponIk = GetComponent<WeaponIK>();
+    currentWeapon = GetComponentInChildren<RaycastWeapon>();
   }
 
-  private void update() {
-    WeaponIk.SetAimTransform(currentWeapon.raycastOrigin);
+  public void ActivateWeapon(){
+      WeaponIk.SetAimTransform(currentWeapon.raycastOrigin);
+  }
 
-    if (currentTarget && currentWeapon) {
+  public void DeativateWeapon(){
+      WeaponIk.SetAimTransform(null);
+  }
+
+  private void Update() {
+    // WeaponIk.SetAimTransform(currentWeapon.raycastOrigin);
+
+    if (currentTarget && currentWeapon && weaponActive) {
       Vector3 target = currentTarget.position;
       currentWeapon.UpdateWeapon(Time.deltaTime, target);
       currentWeapon.UpdateBullet(Time.deltaTime);
@@ -25,6 +35,7 @@ public class AiWeapons : MonoBehaviour
   public void SetTarget(Transform target) {
     WeaponIk.SetTragetTransform(target);
     currentTarget = target;
+    weaponActive = true;
   }
 
   public void SetFiring(bool enabled) {

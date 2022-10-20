@@ -444,7 +444,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &197517884 stripped
 GameObject:
@@ -617,7 +617,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3893294197879345259, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3893294197879345259, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3276,11 +3276,6 @@ Transform:
   m_Father: {fileID: 1975265429}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1357911612 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6135884457200830724, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
-  m_PrefabInstance: {fileID: 256392991}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1395476978
 GameObject:
   m_ObjectHideFlags: 0
@@ -4112,6 +4107,7 @@ GameObject:
   - component: {fileID: 1691050837}
   - component: {fileID: 1691050838}
   - component: {fileID: 1691050839}
+  - component: {fileID: 1691050840}
   m_Layer: 8
   m_Name: Shooter
   m_TagString: Shooter
@@ -4172,11 +4168,14 @@ MonoBehaviour:
   hasMarkers: 0
   constantY: 0
   exitTime: 5000
+  goalOffset: 2
+  goalVOffset: 0.1
   goals: []
   timer: 0
   exitTimer: 0
-  state: 2
-  chaseTarget: {fileID: 594987973}
+  state: 0
+  chaseTarget: {fileID: 0}
+  hasTarget: 0
 --- !u!195 &1691050834
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -4191,7 +4190,7 @@ NavMeshAgent:
   m_Acceleration: 40
   avoidancePriority: 50
   m_AngularSpeed: 720
-  m_StoppingDistance: 5
+  m_StoppingDistance: 2
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -4249,17 +4248,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b46daf016abfc4d368a496e0e08dc90a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetTransform: {fileID: 1357911612}
-  aimTransform: {fileID: 7906340606543308480}
-  targetOffset: {x: 0, y: 0, z: 0}
+  targetTransform: {fileID: 0}
+  aimTransform: {fileID: 0}
+  targetOffset: {x: 0, y: 1.2, z: 0}
   iterations: 10
   weight: 1
   angleLimit: 90
   distanceLimit: 1.5
   humanBones:
   - bone: 7
+    weight: 1
   - bone: 8
+    weight: 1
   - bone: 54
+    weight: 1
 --- !u!114 &1691050838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4286,6 +4288,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 0
+--- !u!114 &1691050840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1691050831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9cf7978d5bf44a978c923815039b2e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!54 &1710481318
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4967,7 +4981,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFiring: 0
-  fireRate: 25
+  fireRate: 0.0001
   bulletSpeed: 1000
   bulletDrop: 0
   damage: 10
@@ -4977,7 +4991,8 @@ MonoBehaviour:
   hitEffect: {fileID: 8259116529077657791}
   tracerEffect: {fileID: 5740132910806622704, guid: e1a4f25d3092a4c238616b29a785ad35, type: 3}
   raycastOrigin: {fileID: 7906340606543308480}
-  ShootingAudio: {fileID: 0}
+  ShootingAudio: {fileID: 8300000, guid: 92ad783efc6a84ada95c8e55d2c1dd87, type: 3}
+  ShootingAudioVolume: 0.5
 --- !u!1 &1955655217
 GameObject:
   m_ObjectHideFlags: 0

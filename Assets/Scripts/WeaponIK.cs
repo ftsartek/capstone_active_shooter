@@ -5,6 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class HumanBone {
   public HumanBodyBones bone;
+  public float weight = 1.0f;
 }
 
 public class WeaponIK : MonoBehaviour
@@ -34,7 +35,7 @@ public class WeaponIK : MonoBehaviour
     }
 
     Vector3 GetTargetPosistion(){
-      Vector3 targetDirection = targetTransform.position - aimTransform.position;
+      Vector3 targetDirection = (targetTransform.position + targetOffset) - aimTransform.position;
       Vector3 aimDirection = aimTransform.forward;
       float blendOut = 0.0f;
 
@@ -65,9 +66,10 @@ public class WeaponIK : MonoBehaviour
       }
         Vector3 targetPosition = GetTargetPosistion();
         for (int i = 0 ; i < iterations; i++){
-        for (int b = 0 ; b < boneTransforms.Length; b++){
-          Transform bone = boneTransforms[b];
-          AimAtTarget(bone, targetPosition,weight);
+          for (int b = 0 ; b < boneTransforms.Length; b++){
+            Transform bone = boneTransforms[b];
+            float boneWeight = humanBones[b].weight * weight;
+            AimAtTarget(bone, targetPosition,boneWeight);
         }
     }
   }

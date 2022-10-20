@@ -66,15 +66,16 @@ public class ShooterAI : MonoBehaviour {
     public float exitTimer;
     public State state = State.Wandering;
     public GameObject chaseTarget;
+    public bool hasTarget = false;
 
     private Random random = new Random();
 
-    AiWeapons weapon;
+    AiWeapons weapons;
 
     void Start() {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        weapon = GetComponent<AiWeapons>();
+        weapons = GetComponentInChildren<AiWeapons>();
 
         playerPos = GameObject.Find("Chest").transform;
         player = GameObject.Find("Player");
@@ -131,27 +132,41 @@ public class ShooterAI : MonoBehaviour {
 
         switch (state) {
             case State.Shooting:
-                Debug.DrawRay(startPoint, playerDirection * playerHit.distance, Color.green);
-                // weapon.SetFiring(true);
+              if(!hasTarget){
+                state = State.NewWanderGoal;
+              } else {
                 agent.isStopped = true;
-                chaseTarget = player;
+                Debug.Log("Agent Firing");
+                weapons.SetFiring(true);
+              }
+                // Debug.DrawRay(startPoint, playerDirection * playerHit.distance, Color.green);
+                // if(weapons.ActivateWeapon == true && weapons.SetTarget != null) {
 
-                if (!closestTarget) {
-                    Debug.Log("chase begun");
 
-                    timer = 0;
-                    state = State.Chasing;
-                }
-                else if (closestTarget != chaseTarget) {
-                    //focus on the closest target, not follow the first to the ends of the earth
-                    //i.e. if one wanders out of sight but another is closer, target that instead
-                    chaseTarget = closestTarget;
-                }
+                // }
+
+                // chaseTarget = player;
+
+                // if (!closestTarget) {
+                //     Debug.Log("chase begun");
+                //
+                //     timer = 0;
+                //     state = State.Chasing;
+                // }
+                // else if (closestTarget != chaseTarget) {
+                //     //focus on the closest target, not follow the first to the ends of the earth
+                //     //i.e. if one wanders out of sight but another is closer, target that instead
+                //     chaseTarget = closestTarget;
+                // }
 
                 break;
 
             case State.Chasing:
                 chaseTarget = player;
+                weapons.ActivateWeapon();
+                weapons.SetTarget(chaseTarget.transform);
+                hasTarget = true;
+
                 Debug.DrawRay(startPoint, playerDirection * playerHit.distance, Color.yellow);
 
                 agent.isStopped = false;
@@ -170,7 +185,10 @@ public class ShooterAI : MonoBehaviour {
                 // Debug.DrawRay(startPoint, playerBody, Color.green, 10.0f);
 
                 Debug.Log("new random target chosen");
-                // weapon.SetFiring(true);
+                weapons.DeativateWeapon();
+                weapons.SetTarget(null);
+                hasTarget = false;
+
                 agent.isStopped = false;
                 chaseTarget = null;
 
@@ -201,19 +219,17 @@ public class ShooterAI : MonoBehaviour {
     void Update() {
 
         animator.SetFloat("Speed",agent.velocity.magnitude);
-
-        if (state == State.Shooting) {//&& timer > bulletTime
-            // Vector3 startPoint = transform.position + bulletOffset;
-            // Vector3 playerDirection = (player.transform.position + bulletOffset) - startPoint;
-            weapon.SetTarget(playerPos);
-            weapon.SetFiring(true);
-            Debug.Log("Shooting");
-
-            // timer = 0;
-            // GameObject bulletInstance = Instantiate(bullet, startPoint, transform.rotation);
-            // weapon.SetFiring(true);
-            // bulletInstance.GetComponent<Rigidbody>().AddForce(playerDirection * bulletForce);
-        }
+        // if (state == State.Shooting) {//&& timer > bulletTime
+        //     // Vector3 startPoint = transform.position + bulletOffset;
+        //     // Vector3 playerDirection = (player.transform.position + bulletOffset) - startPoint;
+        //     // weapons.SetFiring(true);
+        //     // Debug.Log("Shooting");
+        //
+        //     // timer = 0;
+        //     // GameObject bulletInstance = Instantiate(bullet, startPoint, transform.rotation);
+        //     // weapons.SetFiring(true);
+        //     // bulletInstance.GetComponent<Rigidbody>().AddForce(playerDirection * bulletForce);
+        // }
     }
 
     private Vector3 generateNextGoal() {
