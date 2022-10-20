@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
 using UnityEngine.AI;
@@ -18,11 +19,21 @@ public enum State {
 }
 
 public class ShooterAI : MonoBehaviour {
-    private NavMeshAgent agent;
+    NavMeshAgent agent;
+    Animator animator;
+
+    public Transform playerfoot;
+    public AudioClip LandingAudioClip;
+    public AudioClip[] FootstepAudioClips;
+    [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
+
+    Transform playerPos;
     private GameObject player;
     private GameObject playerBody;
     private GameObject marker;
-    private GameObject bullet;
+    GameObject bullet;
+    Transform bulletSpawnPoint;
+
 
     //Settings
     public bool hasMarkers = true;
@@ -36,30 +47,36 @@ public class ShooterAI : MonoBehaviour {
     private static float wanderTime = 1000;
     private static float chaseTime = 50;
     public float exitTime = 5000;
-    private static float bulletTime = 1;
+    // private static float bulletTime = 1;
 
     //Goals
     private static int goalCount = 20;
-    private static float goalOffset = 2;
-    private static float goalVOffset = 0.1f;
+    public float goalOffset = 2;
+    public float goalVOffset = 0.1f;
 
     //Distances
     public static int chaseRadius = 14;
     public static int goalRadius = 100;
     private static float shotRadius = Mathf.Infinity;
 
-    private static float bulletForce = 1000;
+    // private static float bulletForce = 1000;
 
-    [HideInInspector] public Vector3[] goals;
-    [HideInInspector] public float timer;
-    [HideInInspector] public float exitTimer;
-    [HideInInspector] public State state = State.Wandering;
-    [HideInInspector] public GameObject chaseTarget;
+    public Vector3[] goals;
+    public float timer;
+    public float exitTimer;
+    public State state = State.Wandering;
+    public GameObject chaseTarget;
 
     private Random random = new Random();
 
-    private void Awake() {
-        agent = this.GetComponent<NavMeshAgent>();
+    AiWeapons weapon;
+
+    void Start() {
+        agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
+        weapon = GetComponent<AiWeapons>();
+
+        playerPos = GameObject.Find("Chest").transform;
         player = GameObject.Find("Player");
         playerBody = player.transform.Find("PlayerBody").gameObject;
         marker = (GameObject) Resources.Load("Marker");
@@ -115,7 +132,7 @@ public class ShooterAI : MonoBehaviour {
         switch (state) {
             case State.Shooting:
                 Debug.DrawRay(startPoint, playerDirection * playerHit.distance, Color.green);
-
+                // weapon.SetFiring(true);
                 agent.isStopped = true;
                 chaseTarget = player;
 
@@ -134,6 +151,7 @@ public class ShooterAI : MonoBehaviour {
                 break;
 
             case State.Chasing:
+                chaseTarget = player;
                 Debug.DrawRay(startPoint, playerDirection * playerHit.distance, Color.yellow);
 
                 agent.isStopped = false;
@@ -148,9 +166,11 @@ public class ShooterAI : MonoBehaviour {
 
             case State.NewWanderGoal:
                 //this is its own state as it can be troggered by two actions
-                Debug.DrawRay(startPoint, playerDirection * playerHit.distance, Color.red);
-                Debug.Log("new random target chosen");
+                // Debug.DrawRay(startPoint, playerDirection * playerHit.distance, Color.red, 10.0f);
+                // Debug.DrawRay(startPoint, playerBody, Color.green, 10.0f);
 
+                Debug.Log("new random target chosen");
+                // weapon.SetFiring(true);
                 agent.isStopped = false;
                 chaseTarget = null;
 
@@ -158,6 +178,7 @@ public class ShooterAI : MonoBehaviour {
                 timer = 0;
 
                 agent.SetDestination(generateNextGoal());
+
                 break;
 
             case State.Wandering:
@@ -177,14 +198,21 @@ public class ShooterAI : MonoBehaviour {
 
     }
 
-    private void Update() {
-        if (state == State.Shooting && timer > bulletTime) {
-            Vector3 startPoint = transform.position + bulletOffset;
-            Vector3 playerDirection = (player.transform.position + bulletOffset) - startPoint;
+    void Update() {
 
-            timer = 0;
-            GameObject bulletInstance = Instantiate(bullet, startPoint, transform.rotation);
-            bulletInstance.GetComponent<Rigidbody>().AddForce(playerDirection * bulletForce);
+        animator.SetFloat("Speed",agent.velocity.magnitude);
+
+        if (state == State.Shooting) {//&& timer > bulletTime
+            // Vector3 startPoint = transform.position + bulletOffset;
+            // Vector3 playerDirection = (player.transform.position + bulletOffset) - startPoint;
+            weapon.SetTarget(playerPos);
+            weapon.SetFiring(true);
+            Debug.Log("Shooting");
+
+            // timer = 0;
+            // GameObject bulletInstance = Instantiate(bullet, startPoint, transform.rotation);
+            // weapon.SetFiring(true);
+            // bulletInstance.GetComponent<Rigidbody>().AddForce(playerDirection * bulletForce);
         }
     }
 
@@ -234,5 +262,26 @@ public class ShooterAI : MonoBehaviour {
         }
 
         return false;
+    }
+
+    private void OnFootstep(AnimationEvent animationEvent)
+    {
+        if (animationEvent.animatorClipInfo.weight > 0.5f)
+        {
+            if (FootstepAudioClips.Length > 0)
+            {
+                var index = random.Next(0, FootstepAudioClips.Length);
+                // goals[random.Next(0, goals.Length)]
+                AudioSource.PlayClipAtPoint(FootstepAudioClips[index], playerfoot.transform.position , FootstepAudioVolume);
+            }
+        }
+    }
+
+    private void OnLand(AnimationEvent animationEvent)
+    {
+        if (animationEvent.animatorClipInfo.weight > 0.5f)
+        {
+            AudioSource.PlayClipAtPoint(LandingAudioClip, playerfoot.transform.position, FootstepAudioVolume);
+        }
     }
 }
