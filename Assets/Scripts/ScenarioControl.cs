@@ -29,6 +29,7 @@ public class ScenarioControl : MonoBehaviour {
         shooter.SetActive(false);
         shooter.transform.position = entrance.transform.position;
         shooter.SetActive(true);
+  
     }
 
     private void OnCollisionEnter(Collision collision) {

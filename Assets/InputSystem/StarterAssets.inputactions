@@ -44,7 +44,7 @@
                 {
                     "name": "Attack",
                     "type": "Button",
-                    "id": "0bd4d2b3-fa09-425a-8f7e-98361acba86a",
+                    "id": "44a6f252-b601-44ee-b427-8ca4347eb3a3",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -230,8 +230,8 @@
                 },
                 {
                     "name": "",
-                    "id": "dc7b0be9-2197-48ab-9fcc-6cdc4b49be9e",
-                    "path": "<Keyboard>/enter",
+                    "id": "3b68cbcd-2845-4939-9f3e-ebeea959434f",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",

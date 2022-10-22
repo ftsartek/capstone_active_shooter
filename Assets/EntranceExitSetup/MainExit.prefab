@@ -44,7 +44,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2, y: 2, z: 0.6}
+  m_Size: {x: 151.31, y: 180.8, z: 20}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4757851199864753639
 MonoBehaviour:
@@ -58,4 +58,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e514f93f604bf1649b957d0f0b0fcc0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colliding: 
+  endMenu: {fileID: 0}

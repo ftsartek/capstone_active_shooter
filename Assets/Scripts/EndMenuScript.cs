@@ -8,7 +8,7 @@ public class EndMenuScript : MonoBehaviour
 
 {
     // not sure if this is needed, maybe 
-    //public GameObject player;
+    public GameObject player;
 
     private GameObject endMenu;
     public bool debug = false;
@@ -17,13 +17,15 @@ public class EndMenuScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         endMenu = GameObject.Find("EndMenu");
         //GameObject endMenu = GetComponentInChildren(typeof(GameObject), true) as GameObject;
         endMenu.SetActive(false);
 
-
+        player = GameObject.FindGameObjectWithTag("Player");
 
     }
+
 
     // Update is called once per frame
     void Update()
@@ -47,7 +49,7 @@ public class EndMenuScript : MonoBehaviour
             message.text = "You died";
         } else
         {
-            message.text = "You survived";
+            message.text = "You escaped";
         }
 
         // makes cursor appear
@@ -63,9 +65,15 @@ public class EndMenuScript : MonoBehaviour
     // for now this function gets called upon button press but does nothing
     public void tryAgain()
     {
+        Debug.Log("try again");
         Time.timeScale = 1;
+
         // call to start the game again?
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+        // respawn player (forces OnEnable call)
+        player.SetActive(false);
+        player.SetActive(true);
     }
 
     // quit gain upon button press
