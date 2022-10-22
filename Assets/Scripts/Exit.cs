@@ -37,6 +37,7 @@ public class Exit : MonoBehaviour
 
         if (other.tag == "Shooter")
         {
+            Debug.Log("Shooter Exiting");
             // check the shooter wants to exit
             if (other.transform.parent.gameObject.GetComponent<ShooterAI>().state == State.Exiting)
             {

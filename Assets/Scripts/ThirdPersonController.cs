@@ -25,6 +25,9 @@ namespace StarterAssets
         [Range(0.0f, 0.3f)]
         public float RotationSmoothTime = 0.12f;
 
+        // literally just here for the trigger unit test
+        public string colliding = "";
+
         [Tooltip("Acceleration and deceleration")]
         public float SpeedChangeRate = 10.0f;
 
@@ -60,6 +63,8 @@ namespace StarterAssets
 
         [Tooltip("What layers the character uses as ground")]
         public LayerMask GroundLayers;
+
+        public Collider AttackTrigger;
 
         [Header("Cinemachine")]
         [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
@@ -253,12 +258,32 @@ namespace StarterAssets
             {
               _animator.SetBool(_animIDAttack, true);
               Debug.Log("Attacking");
+              AttackTrigger.gameObject.SetActive(true);
+
             }
           }
           _input.attack = false;
+          // AttackTrigger.gameObject.SetActive(false);
         }
 
-
+        // private void OnTriggerEnter(Collider other){
+        //   // _shooter.Health = 0;
+        //   Debug.Log("OnTriggerEnterPlayer");
+        //   // colliding = other.tag;
+        //   // if (other.tag == "Shooter")
+        //   // {
+        //   //   Debug.Log("Shooter Entered Collider");
+        //   //   var health = _shooter.GetComponent<Health>();
+        //   //   Debug.Log(health.currentHealth);
+        //   //   health.currentHealth = 0;
+        //   //   Debug.Log(health.currentHealth);
+        //   //   health.Die();
+        //   //   // if (currentHealth <= 0.0f) {
+        //   //   //   _shooter.Die();
+        //   //   // }
+        //   //   // _shooter.health = 0;
+        //   // }
+        // }
 
         private void Move()
         {

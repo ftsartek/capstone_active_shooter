@@ -21,11 +21,11 @@ public class ScenarioControl : MonoBehaviour {
         // get shooter object
         GameObject shooter = GameObject.FindGameObjectWithTag("Shooter");
 
-        // get door the shooter will enter from 
+        // get door the shooter will enter from
         GameObject[] EntranceList = GameObject.FindGameObjectsWithTag("MainExit");
         GameObject entrance = EntranceList[Random.Range(0, EntranceList.Length)];
 
-        // teleport shooter 
+        // teleport shooter
         shooter.SetActive(false);
         shooter.transform.position = entrance.transform.position;
         shooter.SetActive(true);

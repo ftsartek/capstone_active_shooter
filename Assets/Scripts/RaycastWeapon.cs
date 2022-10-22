@@ -60,12 +60,15 @@ public class RaycastWeapon : MonoBehaviour
       if (isFiring) {
         UpdateFiring(deltaTime, target);
       }
+
+      accumulatedTime += deltaTime;
+
+      UpdateBullet(deltaTime);
+
     }
 
 // Add to shooterAi
     public void UpdateFiring(float deltaTime, Vector3 target) {
-      Debug.Log("PewPew");
-      accumulatedTime += deltaTime;
       float fireInterval = 1.0f / fireRate;
       while(accumulatedTime >= 0.0f){
         FireBullet(target);
