@@ -66,7 +66,9 @@ public class ShooterAI : MonoBehaviour {
     public float exitTimer;
     public State state = State.Wandering;
     public GameObject chaseTarget;
+
     public bool hasTarget = false;
+    public bool lookingAtTarget = false;
 
     private Random random = new Random();
 

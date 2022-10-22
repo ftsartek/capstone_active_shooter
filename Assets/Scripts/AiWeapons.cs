@@ -8,6 +8,7 @@ public class AiWeapons : MonoBehaviour
   WeaponIK WeaponIk;
   Transform currentTarget;
   bool weaponActive = false;
+  public float inaccuracy = 0.0f;
 
   private void Start() {
     WeaponIk = GetComponent<WeaponIK>();
@@ -26,7 +27,8 @@ public class AiWeapons : MonoBehaviour
     // WeaponIk.SetAimTransform(currentWeapon.raycastOrigin);
 
     if (currentTarget && currentWeapon && weaponActive) {
-      Vector3 target = currentTarget.position;
+      Vector3 target = currentTarget.position + WeaponIk.targetOffset;
+      target += Random.insideUnitSphere * inaccuracy;
       currentWeapon.UpdateWeapon(Time.deltaTime, target);
       currentWeapon.UpdateBullet(Time.deltaTime);
     }

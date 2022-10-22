@@ -22,6 +22,11 @@ public class RaycastWeapon : MonoBehaviour
     public Transform raycastOrigin;
     public AudioClip ShootingAudio;
     [Range(0, 1)] public float ShootingAudioVolume = 0.5f;
+    public Vector3 testOffset;
+    public LayerMask layerMask;
+
+
+    public Transform raycastDestination;
 
     Ray ray;
     RaycastHit hitInfo;
@@ -92,7 +97,7 @@ public class RaycastWeapon : MonoBehaviour
       ray.origin = start;
       ray.direction = direction;
 
-      if(Physics.Raycast(ray, out hitInfo, distance)) {
+      if(Physics.Raycast(ray,out hitInfo, distance, layerMask)) {
            Debug.DrawLine(ray.origin, hitInfo.point, Color.red, 4.0f);
            hitEffect.transform.position = hitInfo.point;
            hitEffect.transform.forward = hitInfo.normal;
