@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
- [ExecuteInEditMode]
+ // [ExecuteInEditMode]
 public class AiSensor : MonoBehaviour
 {
 
@@ -84,9 +84,10 @@ public class AiSensor : MonoBehaviour
         Vector3[] vertices = new Vector3[numVertices];
         int[] triangles = new int[numVertices];
 
-        Vector3 bottomCenter = Vector3.zero;
-        Vector3 bottomLeft = Quaternion.Euler(0, -angle, 0) * Vector3.forward * distance;
-        Vector3 bottomRight = Quaternion.Euler(0, angle, 0) * Vector3.forward * distance;
+        var offset = new Vector3(0, -0.5f, 0);
+        Vector3 bottomCenter = offset;
+        Vector3 bottomLeft = offset + Quaternion.Euler(0, -angle, 0) * Vector3.forward * distance;
+        Vector3 bottomRight = offset + Quaternion.Euler(0, angle, 0) * Vector3.forward * distance;
 
         Vector3 topCenter = bottomCenter + Vector3.up * height;
         Vector3 topRight = bottomRight + Vector3.up * height;
@@ -114,8 +115,8 @@ public class AiSensor : MonoBehaviour
         float currentAngle = -angle;
         float deltaAngle = (angle * 2) / segments;
         for (int i = 0; i < segments; i++){
-          bottomLeft = Quaternion.Euler(0, currentAngle, 0) * Vector3.forward * distance;
-          bottomRight = Quaternion.Euler(0, currentAngle + deltaAngle, 0) * Vector3.forward * distance;
+          bottomLeft = offset + Quaternion.Euler(0, currentAngle, 0) * Vector3.forward * distance;
+          bottomRight = offset + Quaternion.Euler(0, currentAngle + deltaAngle, 0) * Vector3.forward * distance;
 
           topRight = bottomRight + Vector3.up * height;
           topLeft = bottomLeft + Vector3.up * height;

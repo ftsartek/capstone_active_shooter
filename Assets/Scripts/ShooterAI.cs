@@ -72,12 +72,14 @@ public class ShooterAI : MonoBehaviour {
 
     private Random random = new Random();
 
-    AiWeapons weapons;
+    public AiWeapons weapons;
+    public AiSensor sensor;
 
     void Start() {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         weapons = GetComponentInChildren<AiWeapons>();
+        sensor = GetComponent<AiSensor>();
 
         playerPos = GameObject.Find("Chest").transform;
         player = GameObject.Find("Player");
@@ -137,10 +139,15 @@ public class ShooterAI : MonoBehaviour {
               if(!hasTarget){
                 state = State.NewWanderGoal;
               } else {
-                agent.isStopped = true;
-                Debug.Log("Agent Firing");
-                weapons.SetFiring(true);
-              }
+                if(sensor.IsInSight(chaseTarget.transform.gameObject)) {
+                  agent.isStopped = true;
+                  Debug.Log("Agent Firing");
+                  weapons.SetFiring(true);
+
+                } else {
+                  state = State.Chasing;
+                }
+                }
                 // Debug.DrawRay(startPoint, playerDirection * playerHit.distance, Color.green);
                 // if(weapons.ActivateWeapon == true && weapons.SetTarget != null) {
 
@@ -148,7 +155,7 @@ public class ShooterAI : MonoBehaviour {
                 // }
 
                 // chaseTarget = player;
-
+                //
                 // if (!closestTarget) {
                 //     Debug.Log("chase begun");
                 //
@@ -164,10 +171,13 @@ public class ShooterAI : MonoBehaviour {
                 break;
 
             case State.Chasing:
-                chaseTarget = player;
+                chaseTarget = playerBody;
                 weapons.ActivateWeapon();
                 weapons.SetTarget(chaseTarget.transform);
                 hasTarget = true;
+                if(sensor.IsInSight(playerBody.transform.gameObject)) {
+                  state = State.Shooting;
+                }
 
                 Debug.DrawRay(startPoint, playerDirection * playerHit.distance, Color.yellow);
 
@@ -204,6 +214,10 @@ public class ShooterAI : MonoBehaviour {
             case State.Wandering:
                 agent.isStopped = false;
 
+                if(sensor.IsInSight(playerBody.transform.gameObject)) {
+                  state = State.Chasing;
+                }
+
                 if (timer >= wanderTime || pathComplete()) {
                     state = State.NewWanderGoal;
                 }
@@ -211,8 +225,9 @@ public class ShooterAI : MonoBehaviour {
 
             case State.Exiting:
                 Debug.Log("exiting");
-
                 agent.SetDestination(GameObject.Find("MainExit").transform.position);
+                // weapons.SetTarget(chaseTarget.transform);
+
                 break;
         }
 
@@ -221,6 +236,7 @@ public class ShooterAI : MonoBehaviour {
     void Update() {
 
         animator.SetFloat("Speed",agent.velocity.magnitude);
+
         // if (state == State.Shooting) {//&& timer > bulletTime
         //     // Vector3 startPoint = transform.position + bulletOffset;
         //     // Vector3 playerDirection = (player.transform.position + bulletOffset) - startPoint;
