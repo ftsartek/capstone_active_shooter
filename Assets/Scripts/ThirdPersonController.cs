@@ -252,6 +252,7 @@ namespace StarterAssets
             if(_hasAnimator)
             {
               _animator.SetBool(_animIDAttack, true);
+              Debug.Log("Attacking");
             }
           }
           _input.attack = false;

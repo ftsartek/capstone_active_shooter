@@ -8,9 +8,12 @@ public class Health : MonoBehaviour
   [HideInInspector]
   public float currentHealth;
   Ragdoll ragdoll;
+  EndMenuScript endMenu;
     // Start is called before the first frame update
     void Start()
     {
+      GameObject endFrame = GameObject.Find("EndFrame");
+        endMenu = endFrame.GetComponent<EndMenuScript>();
         ragdoll = GetComponent<Ragdoll>();
         currentHealth = maxHealth;
 
@@ -33,6 +36,9 @@ public class Health : MonoBehaviour
 
     private void Die() {
       ragdoll.ActivateRagDoll();
+      
+      endMenu.ToggleEndMenu(true);
+
     }
 
 }

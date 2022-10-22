@@ -44,7 +44,7 @@ public class Exit : MonoBehaviour
                 //end game
                 endMenu.ToggleEndMenu(false);
             }
-            
+
         }
     }
 }

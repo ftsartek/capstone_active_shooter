@@ -224,7 +224,7 @@ public class ShooterAI : MonoBehaviour {
                 break;
 
             case State.Exiting:
-                Debug.Log("exiting");
+                Debug.Log("Entered Exiting State");
                 agent.SetDestination(GameObject.Find("MainExit").transform.position);
                 // weapons.SetTarget(chaseTarget.transform);
 

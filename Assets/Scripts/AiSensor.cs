@@ -54,7 +54,7 @@ public class AiSensor : MonoBehaviour
       Vector3 origin = transform.position;
       Vector3 dest = obj.transform.position;
       Vector3 direction = dest - origin;
-      if (direction.y < 0 || direction.y > height){
+      if (direction.y < -0.5f || direction.y > height){
         return false;
       }
 
