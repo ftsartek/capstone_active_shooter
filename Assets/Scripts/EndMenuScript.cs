@@ -47,7 +47,7 @@ public class EndMenuScript : MonoBehaviour
             message.text = "You died";
         } else
         {
-            message.text = "You escaped";
+            message.text = "You survived";
         }
 
         // makes cursor appear
