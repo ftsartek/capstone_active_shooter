@@ -127,6 +127,7 @@ public class ShooterAI : MonoBehaviour {
         GameObject closestTarget = getTarget(hasHit, playerHit);
 
         if (state != State.Exiting && exitTimer > exitTime) {
+            Debug.Log("Entered Exiting State");
             state = State.Exiting;
         }
         else if (state != State.Shooting && closestTarget != null) {
@@ -224,7 +225,6 @@ public class ShooterAI : MonoBehaviour {
                 break;
 
             case State.Exiting:
-                Debug.Log("Entered Exiting State");
                 agent.SetDestination(GameObject.Find("MainExit").transform.position);
                 // weapons.SetTarget(chaseTarget.transform);
 

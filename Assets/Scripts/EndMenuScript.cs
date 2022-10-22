@@ -31,7 +31,7 @@ public class EndMenuScript : MonoBehaviour
         
     }
 
-    public void ToggleEndMenu(bool died)
+    public void ToggleEndMenu(bool died, string type)
     {
         Debug.Log(gameObject);
         // make menu appear 
@@ -47,7 +47,7 @@ public class EndMenuScript : MonoBehaviour
             message.text = "You died";
         } else
         {
-            message.text = "You escaped";
+            message.text = "You " + type;
         }
 
         // makes cursor appear

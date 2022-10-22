@@ -19,14 +19,13 @@ public class Exit : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        colliding = other.tag;
 
         // deal with escaping player
         if (other.tag == "Player")
         {
             Debug.Log("Exit triggered by player");
             //end game
-            endMenu.ToggleEndMenu(false);
+            endMenu.ToggleEndMenu(false, "escaped");
         }
 
         // deal with escaping NPCs
@@ -37,13 +36,12 @@ public class Exit : MonoBehaviour
 
         if (other.tag == "Shooter")
         {
-            Debug.Log("Shooter Exiting");
             // check the shooter wants to exit
-            if (other.transform.parent.gameObject.GetComponent<ShooterAI>().state == State.Exiting)
+            if (GameObject.FindGameObjectWithTag("ShooterMain").GetComponent<ShooterAI>().state == State.Exiting)
             {
                 Debug.Log("Exit triggered by shooter");
                 //end game
-                endMenu.ToggleEndMenu(false);
+                endMenu.ToggleEndMenu(false, "survived");
             }
 
         }

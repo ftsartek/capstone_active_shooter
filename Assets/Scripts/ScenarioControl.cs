@@ -19,13 +19,13 @@ public class ScenarioControl : MonoBehaviour {
         bulletHits = 0;
 
         // get shooter object
-        GameObject shooter = GameObject.FindGameObjectWithTag("Shooter");
+        GameObject shooter = GameObject.FindGameObjectWithTag("ShooterMain");
 
-        // get door the shooter will enter from
+        // get door the shooter will enter from 
         GameObject[] EntranceList = GameObject.FindGameObjectsWithTag("MainExit");
         GameObject entrance = EntranceList[Random.Range(0, EntranceList.Length)];
 
-        // teleport shooter
+        // teleport shooter 
         shooter.SetActive(false);
         shooter.transform.position = entrance.transform.position;
         shooter.SetActive(true);
@@ -43,7 +43,7 @@ public class ScenarioControl : MonoBehaviour {
             Debug.Log("Killed!");
             dead = true;
 
-            endMenu.ToggleEndMenu(true);
+            endMenu.ToggleEndMenu(true, "");
         }
     }
 
@@ -55,7 +55,7 @@ public class ScenarioControl : MonoBehaviour {
         }
         else {
             Debug.Log("Won!");
-            endMenu.ToggleEndMenu(false);
+            endMenu.ToggleEndMenu(false, "took down the shooter!");
         }
     }
 }

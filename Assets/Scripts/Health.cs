@@ -34,10 +34,10 @@ public class Health : MonoBehaviour
       }
     }
 
-    public void Die() {
+    private void Die() {
       ragdoll.ActivateRagDoll();
-      System.Threading.Thread.Sleep(4000);
-      endMenu.ToggleEndMenu(true);
+      
+      endMenu.ToggleEndMenu(true, "");
 
     }
 
