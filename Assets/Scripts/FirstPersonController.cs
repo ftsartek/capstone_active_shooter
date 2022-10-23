@@ -82,7 +82,6 @@ namespace StarterAssets {
 
 		private void Start() {
 
-			Debug.Log("start");
 			_controller = GetComponent<CharacterController>();
 			_input = GetComponent<StarterAssetsInputs>();
 			_playerInput = GetComponent<PlayerInput>();
@@ -101,9 +100,6 @@ namespace StarterAssets {
 
         private void OnEnable()
         {
-			Debug.Log("hello? what about this?");
-			Debug.Log(spawnList);
-
 			// calls only the first time
 			if (spawnList == null)
             {
