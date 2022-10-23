@@ -12,6 +12,7 @@ public class EndMenuScript : MonoBehaviour
 
     private GameObject endMenu;
     public bool debug = false;
+    public GameObject player;
 
 
     // Start is called before the first frame update
@@ -20,9 +21,7 @@ public class EndMenuScript : MonoBehaviour
         endMenu = GameObject.Find("EndMenu");
         //GameObject endMenu = GetComponentInChildren(typeof(GameObject), true) as GameObject;
         endMenu.SetActive(false);
-
-
-
+        player = GameObject.FindGameObjectWithTag("Player");
     }
 
     // Update is called once per frame
@@ -63,9 +62,12 @@ public class EndMenuScript : MonoBehaviour
     // for now this function gets called upon button press but does nothing
     public void tryAgain()
     {
+        Debug.Log("Try again");
         Time.timeScale = 1;
         // call to start the game again?
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        player.SetActive(false);
+        player.SetActive(true);
     }
 
     // quit gain upon button press
@@ -73,9 +75,9 @@ public class EndMenuScript : MonoBehaviour
     {
         Debug.Log("quit");
         //works for both editor and when built
-#if UNITY_EDITOR
+        // if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
-#endif
+        // endif
         Application.Quit();
     }
 }
