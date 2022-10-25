@@ -11,4 +11,4 @@ This project is sponsored by Professor Regan Potangaroa of the School of Built E
 
 The goal of the project is to create and implement a workflow that allows a scanned environment to be dropped into a Unity or Unreal Engine project that can then be configured with reasonable ease to virtually train staff familiar with that environment in the fundamentals of active shooter training: Run --> Hide --> Fight.
 
-Videos detailing the current state of the project are available for the [process](https://www.youtube.com/watch?v=Z3zAbHYYlC0) and the setup [workflow](https://www.youtube.com/watch?v=Sq2IdpHnCZA).
+Videos detailing the current state of the project are available for the [process](https://www.youtube.com/watch?v=Z3zAbHYYlC0) and the setup [workflow](https://www.youtube.com/watch?v=ITznF7UDTPc).
